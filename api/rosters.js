@@ -1,8 +1,10 @@
-import fetch from 'node-fetch';
+export const config = {
+  runtime: 'edge',
+};
 
-export default async function handler(req, res) {
-  const token = process.env.PCO_TOKEN; // pulls from your environment variables
-  
+export default async function handler(req) {
+  const token = process.env.PCO_TOKEN; // pull from environment
+
   const response = await fetch('https://api.planningcenteronline.com/services/v2/plans?order=sort_date', {
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -12,5 +14,10 @@ export default async function handler(req, res) {
 
   const data = await response.json();
 
-  res.status(200).json(data);
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
 }
